@@ -203,8 +203,8 @@ void SysTick_Handler(void)
 void EXTI3_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI3_IRQn 0 */
-	if (checkButtonState(BUTTON_GPIO_Port, 3, 0, 30, 20)) {
-		GPIOB->ODR ^= LED_Pin;
+	if (checkButtonState(BUTTON_GPIO_Port, BUTTON_Pin, 1, 30, 20)) {
+		LED_GPIO_Port->ODR ^= LED_Pin;
 	};
   /* USER CODE END EXTI3_IRQn 0 */
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_3) != RESET)
@@ -220,16 +220,19 @@ void EXTI3_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-uint8_t checkButtonState(GPIO_TypeDef *PORT, uint8_t PIN, uint8_t edge, uint8_t samples_window, uint8_t samples_required) {
+	uint8_t checkButtonState(GPIO_TypeDef *PORT, uint8_t PIN, uint8_t edge, uint8_t samples_window, uint8_t samples_required) {
+		// edge == 0 => FALLING
+		// edge == 1 => RISING
+
 		uint8_t button_state = 0, timeout = 0;
 
 		while (button_state < samples_required && timeout < samples_window) {
-			button_state = ((!(PORT->IDR & (1 << PIN))) == edge) ? (button_state + 1) : (0);
+			button_state = (!!(PORT->IDR & PIN) == edge) ? (button_state + 1) : (0);
 			timeout++;
 			LL_mDelay(1);
 		}
 
 		return ((button_state >= samples_required) && (timeout <= samples_window));
-}
+	}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
