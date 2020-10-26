@@ -203,7 +203,7 @@ void SysTick_Handler(void)
 void EXTI3_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI3_IRQn 0 */
-	if (checkButtonState(BUTTON_GPIO_Port, BUTTON_Pin, 1, 30, 20)) {
+	if (checkButtonState(BUTTON_GPIO_Port, BUTTON_Pin, 0, 30, 20)) {
 		LED_GPIO_Port->ODR ^= LED_Pin;
 	};
   /* USER CODE END EXTI3_IRQn 0 */
